@@ -44,10 +44,13 @@ window.CoraGrid3D=function(host,background,interactive){
   mesh.position.set(centerX,centerY,0);mesh.rotation.set(.07,-.16,0);scene.add(mesh);
   const baseQuaternion=mesh.quaternion.clone();const axis=new T.Vector3(motion==='flip'?1:0,motion==='turn'?1:0,motion==='spin'?1:0);
   const localBounds=geometry.boundingBox.clone(),rotatedBounds=new T.Box3(),rotationMatrix=new T.Matrix4();
-  const hit=document.createElement('button');hit.className='grid-hit grid-hit-3d';hit.type='button';hit.dataset.letter=ch;hit.dataset.motion=motion;hit.dataset.geometry='extruded';hit.dataset.depth=dim.z.toFixed(2);hit.setAttribute('aria-label',ch+' · '+({turn:'立体旋转',flip:'前后翻转一圈',spin:'顺时针转一圈'}[motion]));hit.tabIndex=interactive?0:-1;Object.assign(hit.style,{left:cell.x/1536*100+'%',top:cell.y/1024*100+'%',width:cell.w/1536*100+'%',height:cell.h/1024*100+'%'});host.append(hit);
+  const hit=document.createElement('a');
+  hit.className='grid-hit grid-hit-3d';
+  if(interactive) hit.href='#/about';
+  hit.dataset.letter=ch;hit.dataset.motion=motion;hit.dataset.geometry='extruded';hit.dataset.depth=dim.z.toFixed(2);hit.setAttribute('aria-label', ch + ' · 查看 About');hit.tabIndex=interactive?0:-1;Object.assign(hit.style,{left:cell.x/1536*100+'%',top:cell.y/1024*100+'%',width:cell.w/1536*100+'%',height:cell.h/1024*100+'%'});host.append(hit);
   const s={mesh,hit,motion,hover:false,focus:false,touch:false,phase:0,turn:-.16,centerY,baseQuaternion,axis,localBounds,rotatedBounds,rotationMatrix,bottom:1024-cell.y-cell.h+2,top:1024-cell.y-2,running:false,wasActive:false};states.push(s);
   const start=()=>{if(!raf&&!disposed&&visible)raf=requestAnimationFrame(tick)};
-  listen(hit,'pointerenter',e=>{if(e.pointerType!=='touch'){s.hover=true;start()}});listen(hit,'pointerleave',()=>{s.hover=false;start()});listen(hit,'focus',()=>{s.focus=hit.matches(':focus-visible');start()});listen(hit,'blur',()=>{s.focus=false;s.touch=false;start()});listen(hit,'click',e=>{if(e.pointerType==='touch'||e.detail===0){s.touch=!s.touch;start()}});
+  listen(hit,'pointerenter',e=>{if(e.pointerType!=='touch'){s.hover=true;start()}});listen(hit,'pointerleave',()=>{s.hover=false;start()});listen(hit,'focus',()=>{s.focus=hit.matches(':focus-visible');start()});listen(hit,'blur',()=>{s.focus=false;s.touch=false;start()});
  }
  // A small blush-pink glass marble, resting on the shelf immediately to A's right.
  const ballRadius=20,ballStart=xs[1]+ballRadius+8,ballEnd=xs[2]-ballRadius-10,ballY=1024-573+ballRadius;
